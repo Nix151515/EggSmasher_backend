@@ -52,16 +52,22 @@ function onConnect(socket) {
     console.log('a user connected');
 
     socket.on('new_user_joined', (username) => {
-        io.emit('new_user_joined', { 'username': username, socket_id: socket.id });
+        socket.broadcast.emit('new_user_joined', { 'username': username, socket_id: socket.id });
         // io.to(socket.id).emit('mouse_moved')
         // io.sockets.connected[socketid].emit(); egal cu asta
         console.log(username + ' joined');
     });
 
-    socket.on('gameInfo', (data) => {
-        io.to(data.dest).emit('gameInfo',{src: socket.id, data: data} )
+    socket.on('request', (res) => {
+        io.to(res.dest).emit('request',{src: socket.id, data: res.data} )
         // io.emit('mouse_moved', { src: socket.id, dest: data.dest, coords: data.coords})
-        console.log('gameInfo');
+        console.log('sending play request');
+    });
+
+    socket.on('mouse_move', (res) => {
+        io.to(res.dest).emit('mouse_move',{src: socket.id, data: res.data} )
+        // io.emit('mouse_moved', { src: socket.id, dest: data.dest, coords: data.coords})
+        console.log('mouse_move');
     });
 
     socket.on('disconnect', () => {
