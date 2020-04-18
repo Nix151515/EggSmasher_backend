@@ -96,6 +96,8 @@ function onConnect(socket) {
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id);
         players = players.filter(el =>  el.socket_id != socket.id)
+        socket.broadcast.emit('user_leave', {socket_id : socket.id});
+        console.log('broadcast')
         // broadcast played exit
     });
 }
